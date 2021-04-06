@@ -1,7 +1,9 @@
-# flutter_painting
+# Flutter CustomPaint & CustomPainter
 
-A new Flutter application.
+An example of **CustomPaint** and **CustomPainter** implementation.
 
 ## Preview
 
-![./PREVIEW.png](PREVIEW.png)
+|Rotation Start|Rotation End|
+|:-:|:-:|
+|![./PREVIEW_START.png](PREVIEW_START.png)|![./PREVIEW_END.png](PREVIEW_END.png)|
