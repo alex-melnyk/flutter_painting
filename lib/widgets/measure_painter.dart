@@ -8,11 +8,15 @@ class MeasurePainter extends CustomPainter {
     this.value = 0.0,
     this.circleWith = 2.0,
     this.divisions = 24,
-  });
+    this.minAngle = -135.0,
+    this.maxAngle = 135.0,
+  }) : assert(minAngle < maxAngle, 'minAngle < maxAngle');
 
   final double value;
   final double circleWith;
-  final double divisions;
+  final int divisions;
+  final double minAngle;
+  final double maxAngle;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -44,46 +48,80 @@ class MeasurePainter extends CustomPainter {
     );
 
     final paint = Paint()
-      ..color = ColorTween(
-        begin: Colors.green,
-        end: Colors.red,
-      ).transform(value)
+      ..color = Colors.black26
       ..isAntiAlias = true;
 
+    final arrowBottomWidth = 5.0 / 2.0;
+
+    // Build arrow path.
     final arrowPath = Path()
-      ..moveTo(offsetCenter.dx - 3, offsetCenter.dy)
-      ..lineTo(offsetCenter.dx, 10.0)
-      ..lineTo(offsetCenter.dx + 3, offsetCenter.dy)
+      ..moveTo(offsetCenter.dx - arrowBottomWidth, offsetCenter.dy)
+      ..lineTo(offsetCenter.dx, 20.0)
+      ..lineTo(offsetCenter.dx + arrowBottomWidth, offsetCenter.dy)
       ..close();
 
+    // Draw arrow center center circle
+    canvas.drawCircle(offsetCenter, arrowBottomWidth * 2, paint);
+
+    paint.color = ColorTween(
+      begin: Colors.green,
+      end: Colors.red,
+    ).transform(value);
+
+    // Draw arrow bottom rounding.
+    canvas.drawCircle(offsetCenter, arrowBottomWidth, paint);
+
+    // Save canvas state.
     canvas.save();
+
+    // Translate canvas to rotate from canter.
     canvas.translate(offsetCenter.dx, offsetCenter.dy);
-    canvas.rotate(radians(360.0 * value));
+
+    // Rotate canvas.
+    canvas.rotate(radians(Tween<double>(
+      begin: minAngle,
+      end: maxAngle,
+    ).transform(value)));
+
+    // Translate canvas back.
     canvas.translate(-offsetCenter.dx, -offsetCenter.dy);
 
+    // Draw path on rotated canvas.
     canvas.drawPath(arrowPath, paint);
+
+    // Reset canvas manipulation.
     canvas.restore();
   }
 
   void _drawDivisions(Canvas canvas, Size size) {
+    // Translate canvas to draw from center.
+    canvas.translate(size.width / 2, size.height / 2);
+
     final paint = Paint();
 
-    final divisionDegrees = 360.0 / divisions;
+    // Calculate total degrees to paint.
+    final totalDegrees = (minAngle - maxAngle).abs();
+    // Calculate common division angle.
+    final divisionDegrees = totalDegrees / (divisions - 1);
 
-    canvas.translate(size.width / 2, size.height / 2);
+    // Draw divisions on the canvas.
     for (var i = 0; i < divisions; i++) {
+      // Calculate angle by division index.
       final stepDegrees = divisionDegrees * i;
-      final offsetAngle = _angleToPoint(90.0, -divisionDegrees * i - 90);
+      // Get division point based radius and stepDegrees.
+      final offsetAngle = _angleToPoint(
+        90.0,
+        divisionDegrees * i - 90 + minAngle,
+      );
 
-      canvas.save();
-
+      // Set paint color based on division angle.
       paint.color = ColorTween(
-        begin: Colors.red,
-        end: Colors.green,
-      ).transform(stepDegrees / 360.0);
+        begin: Colors.green,
+        end: Colors.red,
+      ).transform(stepDegrees / totalDegrees);
 
-      canvas.drawCircle(offsetAngle, 2, paint);
-      canvas.restore();
+      // Draw division.
+      canvas.drawCircle(offsetAngle, 5, paint);
     }
   }
 

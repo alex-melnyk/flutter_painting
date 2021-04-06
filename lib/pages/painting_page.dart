@@ -16,8 +16,8 @@ class _PaintingPageState extends State<PaintingPage>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
-      value: 0.125,
+      duration: Duration(seconds: 5),
+      value: 0.0,
     );
   }
 
@@ -47,10 +47,9 @@ class _PaintingPageState extends State<PaintingPage>
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: () {
-                  _animationController
-                    ..value = 0.0
-                    ..forward();
+                onPressed: () async {
+                  _animationController.value = 0.0;
+                  await _animationController.forward();
                 },
                 child: Text('Animate'),
               ),
