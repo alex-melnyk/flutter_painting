@@ -6,4 +6,5 @@ An example of **CustomPaint** and **CustomPainter** implementation.
 
 |Rotation Start|Rotation End|
 |:-:|:-:|
-|![./PREVIEW_START.png](PREVIEW_START.png)|![./PREVIEW_END.png](PREVIEW_END.png)|
+|![./PREVIEW_ANDROID.png](PREVIEW_ANDROID.png)|![./PREVIEW_IOS.png](PREVIEW_IOS.png)|
+|![./PREVIEW_WEB.png](PREVIEW_WEB.png)|![./PREVIEW_DESKTOP.png](PREVIEW_DESKTOP.png)|
